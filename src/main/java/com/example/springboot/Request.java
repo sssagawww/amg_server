@@ -9,4 +9,5 @@ public class Request {
     private int userId;
     private String userName;
     private String miniGame;
+    private float accuracy;
 }
