@@ -6,8 +6,10 @@ public class Player {
     private boolean ready;
     private float accuracy;
 
-    public Player(String userName) {
+    public Player(int id, String userName) {
+        this.userId = id;
         this.userName = userName;
+        ready = false;
     }
 
     public void setReady(boolean b) {
@@ -28,5 +30,9 @@ public class Player {
 
     public String getUsername() {
         return  userName;
+    }
+
+    public int getUserId() {
+        return userId;
     }
 }

@@ -6,6 +6,7 @@ import lombok.Value;
 @Value
 @Builder
 public class BaseResponse {
-    private String status;
-    private Integer code;
+    private int userId;
+    private String userName;
+    private float number;
 }
