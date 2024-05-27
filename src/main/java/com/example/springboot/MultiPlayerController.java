@@ -106,7 +106,7 @@ public class MultiPlayerController {
 
     @PostMapping("/setplayerready")
     public void setplayerready(@RequestBody Request request) {
-        players.get(request.getUserId()).setReady(true);
+        players.get(request.getUserId()).setReady(request.isReady());
         players.get(request.getUserId()).setAccuracy(request.getNumber());
     }
 
@@ -124,7 +124,7 @@ public class MultiPlayerController {
             }
         }
 
-        responce = new JoinResponce(winnerNick + " won!");
+        responce = new JoinResponce(winnerNick + " выиграл!");
 
         return responce;
     }

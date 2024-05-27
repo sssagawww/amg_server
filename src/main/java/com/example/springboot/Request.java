@@ -10,4 +10,5 @@ public class Request {
     private String userName;
     private String miniGame;
     private float number;
+    private boolean ready;
 }
