@@ -17,116 +17,114 @@ public class MultiPlayerController {
     private static final String ERROR_STATUS = "error";
     private static final int CODE_SUCCESS = 100;
     private static final int AUTH_FAILURE = 102;
+    private static final String PASSWORD = "super-secret-password";
     private boolean canStart;
 
-    /*@GetMapping
-    public BaseResponse showStatus() {
-        return new BaseResponse(SUCCESS_STATUS, 1);
-    }*/
-
-    /*@PostMapping("/pay")
-    public BaseResponse pay(@RequestParam(value = "key") String key, @RequestBody PaymentRequest request) {
-
-        final BaseResponse response;
-
-        if (sharedKey.equalsIgnoreCase(key)) {
-            int userId = request.getUserId();
-            String itemId = request.getItemId();
-            double discount = request.getDiscount();
-            // Process the request
-            // ....
-            // Return success response to the client.
-            response = new BaseResponse(SUCCESS_STATUS, CODE_SUCCESS);
-        } else {
-            response = new BaseResponse(ERROR_STATUS, AUTH_FAILURE);
-        }
-        return response;
-    }*/
-
     @PostMapping("/join")
-    public JoinResponce join(@RequestBody Request request) {
-        final JoinResponce responce;
-        if (!(miniGame.equals(MUSHROOMS) || miniGame.equals(PAINT))) {
-            miniGame = request.getMiniGame();
-            responce = new JoinResponce("can join");
-            players.put(request.getUserId(), new Player(request.getUserId(), request.getUserName()));
-        } else {
-            if (request.getMiniGame().equals(miniGame)) {
-                canStart = true;
+    public JoinResponce join(@RequestBody Request request, @RequestHeader(value = "SecretHeader") String header) {
+        if (header.equals(PASSWORD)) {
+            final JoinResponce responce;
+            if (!(miniGame.equals(MUSHROOMS) || miniGame.equals(PAINT))) {
+                miniGame = request.getMiniGame();
                 responce = new JoinResponce("can join");
                 players.put(request.getUserId(), new Player(request.getUserId(), request.getUserName()));
             } else {
-                responce = new JoinResponce("can't join");
+                if (request.getMiniGame().equals(miniGame)) {
+                    canStart = true;
+                    responce = new JoinResponce("can join");
+                    players.put(request.getUserId(), new Player(request.getUserId(), request.getUserName()));
+                } else {
+                    responce = new JoinResponce("can't join");
+                }
             }
+            System.out.println(players);
+            return responce;
         }
-        System.out.println(players);
-        return responce;
+        return null;
     }
 
     @PostMapping("/info")
-    public BaseResponse info(@RequestBody Request request) {
-        int userId = players.get(request.getUserId()).getUserId();
-        String userName =  players.get(request.getUserId()).getUsername();
-        float number =  players.get(request.getUserId()).getAccuracy();
-        players.get(request.getUserId()).setAccuracy(request.getNumber());
-        for (Player player : players.values()) {
-            if (player.getUserId() != request.getUserId()) {
-                number = player.getAccuracy();
-                userName = player.getUsername();
-                userId = player.getUserId();
+    public BaseResponse info(@RequestBody Request request, @RequestHeader(value = "SecretHeader") String header) {
+        if (header.equals(PASSWORD)) {
+            int userId = players.get(request.getUserId()).getUserId();
+            String userName = players.get(request.getUserId()).getUsername();
+            float number = players.get(request.getUserId()).getAccuracy();
+            players.get(request.getUserId()).setAccuracy(request.getNumber());
+            for (Player player : players.values()) {
+                if (player.getUserId() != request.getUserId()) {
+                    number = player.getAccuracy();
+                    userName = player.getUsername();
+                    userId = player.getUserId();
+                }
             }
+            return new BaseResponse(userId, userName, number);
         }
-        return new BaseResponse(userId, userName, number);
+        return null;
     }
 
     @PostMapping("/leave")
-    public JoinResponce leave(@RequestBody Request request) {
-        players.remove(request.getUserId());
-        if (players.isEmpty()) {
-            miniGame = "null";
+    public JoinResponce leave(@RequestBody Request request, @RequestHeader(value = "SecretHeader") String header) {
+        if (header.equals(PASSWORD)) {
+            players.remove(request.getUserId());
+            if (players.isEmpty()) {
+                miniGame = "null";
+            }
+            return new JoinResponce("left " + request.getUserId());
         }
-        return new JoinResponce("left " + request.getUserId());
+        return null;
     }
 
     @PostMapping("/playerisready")
-    public JoinResponce playersready(@RequestBody Request request) {
-        players.get(request.getUserId()).setReady(true);
-        return new JoinResponce(request.getUserName() + " isReady");
+    public JoinResponce playersready(@RequestBody Request request, @RequestHeader(value = "SecretHeader") String header) {
+        if (header.equals(PASSWORD)) {
+            players.get(request.getUserId()).setReady(true);
+            return new JoinResponce(request.getUserName() + " isReady");
+        }
+        return null;
     }
 
     @GetMapping("/readyornot")
-    public boolean readyornot() {
-        for (Player player : players.values()) {
-            if (!player.isReady()) {
-                return false;
+    public boolean readyornot(@RequestHeader(value = "SecretHeader") String header) {
+        if (header.equals(PASSWORD)) {
+            for (Player player : players.values()) {
+                if (!player.isReady()) {
+                    return false;
+                }
             }
+            return true;
         }
-        return true;
+        return Boolean.parseBoolean(null);
     }
 
     @PostMapping("/setplayerready")
-    public void setplayerready(@RequestBody Request request) {
-        players.get(request.getUserId()).setReady(request.isReady());
-        players.get(request.getUserId()).setAccuracy(request.getNumber());
+    public void setplayerready(@RequestBody Request request, @RequestHeader(value = "SecretHeader") String header) {
+        if (header.equals(PASSWORD)) {
+            players.get(request.getUserId()).setReady(request.isReady());
+            players.get(request.getUserId()).setAccuracy(request.getNumber());
+        }
     }
 
     @GetMapping("/getwinner")
-    public JoinResponce getWinner() {
-        JoinResponce responce;
+    public JoinResponce getWinner(@RequestHeader(value = "SecretHeader") String header) {
 
-        String winnerNick = "";
-        float maxAcc = Float.MIN_VALUE;
+        if (header.equals(PASSWORD)) {
+            JoinResponce responce;
 
-        for (Player player : players.values()) {
-            if (player.getAccuracy() > maxAcc) {
-                maxAcc = player.getAccuracy();
-                winnerNick = player.getUsername();
+            String winnerNick = "";
+            float maxAcc = Float.MIN_VALUE;
+
+            for (Player player : players.values()) {
+                if (player.getAccuracy() > maxAcc) {
+                    maxAcc = player.getAccuracy();
+                    winnerNick = player.getUsername();
+                }
             }
+
+            responce = new JoinResponce(winnerNick + " выиграл!");
+
+            return responce;
         }
-
-        responce = new JoinResponce(winnerNick + " выиграл!");
-
-        return responce;
+        return null;
     }
 }
 
