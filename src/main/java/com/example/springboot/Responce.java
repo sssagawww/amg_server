@@ -5,6 +5,6 @@ import lombok.Value;
 
 @Value
 @Builder
-public class JoinResponce {
+public class Responce {
     private String joined;
 }

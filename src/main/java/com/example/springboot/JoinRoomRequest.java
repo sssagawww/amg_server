@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 @Builder
-public class PaymentRequest {
+public class JoinRoomRequest {
+    private int roomId;
+    private String userName;
     private int userId;
-    private String itemId;
-    private double discount;
 }

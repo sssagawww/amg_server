@@ -5,10 +5,8 @@ import lombok.Data;
 
 @Data
 @Builder
-public class Request {
+public class CreateRoomRequest {
     private int userId;
     private String userName;
-    private float number;
-    private boolean ready;
-    private int roomId;
+    private String miniGame;
 }
