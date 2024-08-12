@@ -1,9 +1,6 @@
 package com.example.springboot;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-
-import static com.example.springboot.Global.players;
 
 public class Room {
     private int roomId;
@@ -64,5 +61,9 @@ public class Room {
             }
         }
         return winnerNick;
+    }
+
+    public HashMap<Integer, Player> getPlayers() {
+        return players;
     }
 }

@@ -6,5 +6,5 @@ import lombok.Value;
 @Value
 @Builder
 public class Responce {
-    private String joined;
+    private String string;
 }
