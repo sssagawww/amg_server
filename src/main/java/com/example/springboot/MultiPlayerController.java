@@ -17,7 +17,7 @@ public class MultiPlayerController {
 
     @PostMapping("/info")
     public BaseRoomResponse info(@RequestBody Request request, @RequestHeader(value = "SecretHeader") String header) {
-        if (header.equals(PASSWORD)) {
+        if (header.equals(PASSWORD) && getRoomByRoomID.get(request.getRoomId()) != null) {
             ArrayList<Integer> userIds = new ArrayList<>();
             ArrayList<String> userNames = new ArrayList<>();
             ArrayList<Float> numbers = new ArrayList<>();
@@ -133,7 +133,7 @@ public class MultiPlayerController {
 
     @PostMapping("/playerisreadyroom")
     public Responce playerIsReadyRoom(@RequestBody Request request, @RequestHeader(value = "SecretHeader") String header) {
-        if (header.equals(PASSWORD)) {
+        if (header.equals(PASSWORD) && getRoomByRoomID.get(request.getRoomId()) != null) {
             //уставливаем, что этот игрок готов
             getRoomByRoomID.get(request.getRoomId()).getPlayer(request.getUserId()).setReady(true);
             return new Responce(request.getUserName() + " isReady");
@@ -143,7 +143,7 @@ public class MultiPlayerController {
 
     @PostMapping("/setplayerreadyroom")
     public void setPlayerReadyRoom(@RequestBody Request request, @RequestHeader(value = "SecretHeader") String header) {
-        if (header.equals(PASSWORD)) {
+        if (header.equals(PASSWORD) && getRoomByRoomID.get(request.getRoomId()) != null) {
             //устанавливаем готовность игрока (да/нет)
             getRoomByRoomID.get(request.getRoomId()).getPlayer(request.getUserId()).setReady(request.isReady());
             getRoomByRoomID.get(request.getRoomId()).getPlayer(request.getUserId()).setAccuracy(request.getNumber());
@@ -172,7 +172,7 @@ public class MultiPlayerController {
 
     @PostMapping("/getwinnerroom")
     public Responce getWinnerRoom(@RequestBody Request request, @RequestHeader(value = "SecretHeader") String header) {
-        if (header.equals(PASSWORD)) {
+        if (header.equals(PASSWORD) && getRoomByRoomID.get(request.getRoomId()) != null) {
             Room room = getRoomByRoomID.get(request.getRoomId());
             String winnerNick = room.getWinner();
             return new Responce(winnerNick + " выиграл!");
